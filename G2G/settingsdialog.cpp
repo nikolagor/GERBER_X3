@@ -6,7 +6,7 @@
 #include "colorselector.h"
 
 #include <QApplication>
-#include <QGLWidget>
+//#include <QGLWidget>
 #include <QtWidgets>
 #include <graphicsview.h>
 
@@ -52,7 +52,7 @@ SettingsDialog::SettingsDialog(QWidget* parent)
     }
 
     connect(cbxFontSize, &QComboBox::currentTextChanged, [](const QString& fontSize) {
-        qApp->setStyleSheet(QString(qApp->styleSheet()).replace(QRegExp("font-size:\\s*\\d+"), "font-size: " + fontSize));
+        qApp->setStyleSheet(QString(qApp->styleSheet()).replace(QRegularExpression("font-size:\\s*\\d+"), "font-size: " + fontSize));
         QFont f;
         f.setPointSize(fontSize.toInt());
         qApp->setFont(f);
@@ -135,9 +135,9 @@ void SettingsDialog::writeSettings()
     MySettings settings;
     settings.beginGroup("Viewer");
     if (settings.value("chbxOpenGl").toBool() != chbxOpenGl->isChecked()) {
-        App::graphicsView()->setViewport(chbxOpenGl->isChecked()
-                ? new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel | QGL::Rgba))
-                : new QWidget);
+//        App::graphicsView()->setViewport(chbxOpenGl->isChecked()
+//                ? new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel | QGL::Rgba))
+//                : new QWidget);
         App::graphicsView()->viewport()->setObjectName("viewport");
         App::graphicsView()->setRenderHint(QPainter::Antialiasing, chbxAntialiasing->isChecked());
         settings.setValue(chbxOpenGl);

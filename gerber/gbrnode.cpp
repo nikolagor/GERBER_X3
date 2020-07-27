@@ -7,6 +7,7 @@
 #include <QAction>
 #include <QFileInfo>
 #include <QMenu>
+#include <QActionGroup>
 #include <QPainter>
 #include <QTextBrowser>
 #include <QTimer>

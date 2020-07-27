@@ -223,10 +223,10 @@ int FileModel::rowCount(const QModelIndex& parent) const
 //    //        beginRow = rowCount(QModelIndex());
 
 //    //    QString encodedData = data->data(mimeType);
-//    //    QList<QString> list = encodedData.split('|', QString::SkipEmptyParts);
+//    //    QVector<QString> list = encodedData.split('|', QString::SkipEmptyParts);
 
 //    //    //    for (QString& item : list) {
-//    //    //        QList<QString> d = item.split(',', QString::SkipEmptyParts);
+//    //    //        QVector<QString> d = item.split(',', QString::SkipEmptyParts);
 //    //    //        if (d.size() < 2)
 //    //    //            return false;
 //    //    //        int srcRow = d.at(0).toInt();

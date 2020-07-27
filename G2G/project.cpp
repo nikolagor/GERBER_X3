@@ -316,12 +316,12 @@ void Project::saveSelectedToolpaths()
 
     using Key = QPair<uint, Side>;
 
-    QMap<Key, QList<GCode::File*>> mm;
+    QMap<Key, QVector<GCode::File*>> mm;
     for (GCode::File* file : files)
         mm[{ file->getTool().hash(), file->side() }].append(file);
 
     for (const Key& key : mm.keys()) {
-        QList<GCode::File*> files(mm.value(key));
+        QVector<GCode::File*> files(mm.value(key));
         if (files.size() < 2) {
             for (GCode::File* file : files) {
                 QString name(GCode::GCUtils::getLastDir().append(file->shortName()));
@@ -340,7 +340,7 @@ void Project::saveSelectedToolpaths()
             name = QFileDialog::getSaveFileName(nullptr, tr("Save GCode file"), name, tr("GCode (*.%1)").arg(GlobalSettings::gcFileExtension()));
             if (name.isEmpty())
                 return;
-            QList<QString> sl;
+            QVector<QString> sl;
             for (int i = 0; i < files.size(); ++i) {
                 GCode::File* file = files[i];
                 file->itemGroup()->setVisible(false);

@@ -57,7 +57,7 @@ public:
 private:
     static bool m_deleteEnable;
     ToolItem* parentItem = nullptr;
-    QList<ToolItem*> childItems;
+    QVector<ToolItem*> childItems;
     mutable int m_toolId = 0;
     QString m_name;
     QString m_note;

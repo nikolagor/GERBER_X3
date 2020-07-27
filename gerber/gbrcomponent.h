@@ -159,7 +159,7 @@ public:
             return stream;
         }
     };
-    QList<Supplier> suppliers; /* <SN>,<SPN>,{<SN>,<SPN>} <SN> is a field with the supplier name. <SPN> is a field with a supplier part name*/
+    QVector<Supplier> suppliers; /* <SN>,<SPN>,{<SN>,<SPN>} <SN> is a field with the supplier name. <SPN> is a field with a supplier part name*/
     struct Pins {
         int number;
         QString description;
@@ -180,7 +180,7 @@ public:
         }
     };
 
-    QList<Pins> pins;
+    QVector<Pins> pins;
 
     friend QDataStream& operator<<(QDataStream& stream, const Component& c)
     {

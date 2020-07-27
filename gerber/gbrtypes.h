@@ -312,7 +312,7 @@ struct StepRepeatStr {
     int y = 0;
     double i = 0.0;
     double j = 0.0;
-    QList<GraphicObject> storage;
+    QVector<GraphicObject> storage;
 };
 
 } // namespace Gerber

@@ -59,7 +59,7 @@ private:
     bool selected = false;
 
     ThermalNode* m_parentItem = nullptr;
-    QList<QSharedPointer<ThermalNode>> childItems;
+    QVector<QSharedPointer<ThermalNode>> childItems;
     Qt::CheckState m_checkState = Qt::Checked;
 
     static ThermalModel* model;

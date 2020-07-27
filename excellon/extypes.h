@@ -205,7 +205,7 @@ struct State {
     };
 
     Pos rawPos;
-    QList<Pos> rawPosList;
+    QVector<Pos> rawPosList;
     Format* format = nullptr;
     GCode gCode = G05 /*G_NULL*/;
     MCode mCode = M_NULL;
@@ -250,7 +250,7 @@ public:
     {
     }
 
-    // QList<T>::node_construct() -> *reinterpret_cast<T*>(n) = t; uses operator=(const Hole&),
+    // QVector<T>::node_construct() -> *reinterpret_cast<T*>(n) = t; uses operator=(const Hole&),
     // but it's deleted, because field "file" is "const",
     // so, remove "const"
     //const File* const file = nullptr;

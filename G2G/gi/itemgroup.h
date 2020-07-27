@@ -9,7 +9,7 @@
 #include "graphicsitem.h"
 #include "pathitem.h"
 
-class ItemGroup : public QList<GraphicsItem*> {
+class ItemGroup : public QVector<GraphicsItem*> {
 public:
     ~ItemGroup();
     void append(GraphicsItem* value);

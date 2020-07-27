@@ -84,7 +84,7 @@ public:
         return rfiles;
     }
 
-    void showFiles(const QList<QPair<int, int>>&& fileIds)
+    void showFiles(const QVector<QPair<int, int>>&& fileIds)
     {
         for (auto file : m_files)
             file->itemGroup()->setVisible(false);

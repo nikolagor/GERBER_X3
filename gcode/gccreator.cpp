@@ -220,7 +220,7 @@ void Creator::stacking(Paths& paths)
     /***********************************************************************************************/
     t.start();
     auto mathBE = [this](Paths& paths, Path& path, QPair<int, int> idx) -> bool {
-        QList<int> list;
+        QVector<int> list;
         list.append(idx.first);
         for (int i = paths.count() - 1, index = idx.first; i; --i) {
             double d = std::numeric_limits<double>::max();

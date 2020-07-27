@@ -8,6 +8,7 @@
 #include <QFile>
 #include <cmath> // pow()
 #include <settings.h>
+#include <QRegExp>
 
 using namespace Excellon;
 
@@ -169,7 +170,7 @@ bool Parser::parseMCode(const QString& line)
     if (match.exactMatch(line)) {
         switch (match.cap(1).toInt()) {
         case M00: {
-            QList<int> keys(file()->m_tools.keys());
+            QVector<int> keys(file()->m_tools.keys());
             if (keys.indexOf(m_state.tCode) < (keys.size() - 1))
                 m_state.tCode = keys[keys.indexOf(m_state.tCode) + 1];
         } break;

@@ -12,7 +12,7 @@
 #include <gi/itemgroup.h>
 namespace Gerber {
 
-class File : public AbstractFile, public QList<GraphicObject> {
+class File : public AbstractFile, public QVector<GraphicObject> {
     friend class Parser;
 
 public:
@@ -47,7 +47,7 @@ protected:
     Paths merge() const override;
 
 private:
-    QList<Component> m_components;
+    QVector<Component> m_components;
 
     QMap<int, QSharedPointer<AbstractAperture>> m_apertures;
     ItemsType m_itemsType = Normal;

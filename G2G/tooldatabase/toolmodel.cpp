@@ -199,9 +199,9 @@ bool ToolModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int r
 
     QString encodedData = data->data(mimeType);
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QList<QString> list = encodedData.split('|', QString::SkipEmptyParts);
+    QVector<QString> list = encodedData.split('|', QString::SkipEmptyParts);
 #else
-    QList<QString> list = encodedData.split('|', Qt::SkipEmptyParts);
+    QVector<QString> list = encodedData.split('|', Qt::SkipEmptyParts);
 #endif
 
     for (QString& item : list) {
@@ -244,8 +244,8 @@ void ToolModel::exportTools()
     ToolHolder::writeTools(jsonObject);
 
     ToolItem* item;
-    QList<ToolItem*> stack;
-    QList<int> row;
+    QVector<ToolItem*> stack;
+    QVector<int> row;
 
     QJsonArray treeArray;
 
@@ -315,8 +315,8 @@ void ToolModel::importTools()
 #endif
     ToolHolder::readTools(loadDoc.object());
 
-    QList<ToolItem*> parentsStack;
-    QList<int> nestingStack;
+    QVector<ToolItem*> parentsStack;
+    QVector<int> nestingStack;
     parentsStack << rootItem;
     nestingStack << 0;
 

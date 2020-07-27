@@ -298,7 +298,7 @@ void MainWindow::createActionsEdit()
     // action = toolBar->addAction(QIcon::fromTheme("document-close"), tr("Redo"), this, &MainWindow::redo);
     // action->setShortcut(QKeySequence::Redo);
     // action = s->addAction(QIcon::fromTheme("layer-delete"), tr("Delete selected"), [this]() {
-    // QList<QGraphicsItem*> list;
+    // QVector<QGraphicsItem*> list;
     // for (QGraphicsItem* item : MyApp::scene()->123->items())
     // if (item->isSelected() && item->type() != DrillItemType)
     // list << item;
@@ -496,8 +496,8 @@ void MainWindow::createActionsGraphics()
     tb->addSeparator();
 
     auto ex = [](ClipType type) {
-        QList<QGraphicsItem*> si = App::scene()->selectedItems();
-        QList<GraphicsItem*> rmi;
+        QVector<QGraphicsItem*> si = App::scene()->selectedItems();
+        QVector<GraphicsItem*> rmi;
         for (QGraphicsItem* item : si) {
             if (item->type() == GiGerber) {
                 GerberItem* gitem = reinterpret_cast<GerberItem*>(item);
@@ -758,8 +758,8 @@ void MainWindow::open()
     if (files.isEmpty())
         return;
 
-    if (files.filter(QRegExp(".+g2g$")).size()) {
-        loadFile(files.at(files.indexOf(QRegExp(".+g2g$"))));
+    if (files.filter(QRegularExpression(".+g2g$")).size()) {
+        loadFile(files.at(files.indexOf(QRegularExpression(".+g2g$"))));
         return;
     } else {
         for (QString& fileName : files) {

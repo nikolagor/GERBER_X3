@@ -5,9 +5,9 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDebug>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QFile>
-#include <QGLWidget>
+//#include <QGLWidget>
 #include <QLocale>
 #include <QOperatingSystemVersion>
 #include <QSettings>
@@ -44,10 +44,10 @@ int main(int argc, char* argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, app.applicationDirPath());
 
-    QGLFormat glf = QGLFormat::defaultFormat();
-    glf.setSampleBuffers(true);
-    glf.setSamples(16);
-    QGLFormat::setDefaultFormat(glf);
+//    QGLFormat glf = QGLFormat::defaultFormat();
+//    glf.setSampleBuffers(true);
+//    glf.setSamples(16);
+//    QGLFormat::setDefaultFormat(glf);
 
     initIcon(qApp->applicationDirPath());
     translation(&app);

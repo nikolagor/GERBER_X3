@@ -12,6 +12,7 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QThread>
+#include <QRegExp>
 #include <settings.h>
 
 /*
@@ -191,9 +192,9 @@ void Parser::parseLines(const QString& gerberLines, const QString& fileName)
     mutex.unlock();
 }
 
-QList<QString> Parser::cleanAndFormatFile(QString data)
+QVector<QString> Parser::cleanAndFormatFile(QString data)
 {
-    QList<QString> gerberLines;
+    QVector<QString> gerberLines;
 
     enum State {
         Param,
@@ -598,7 +599,7 @@ bool Parser::parseAperture(const QString& gLine)
          *    * Polygon (P)*: diameter(float), vertices(int), [rotation(float)]
          *    * Aperture Macro (AM)*: macro (ApertureMacro), modifiers (list)
          */
-        QList<QString> paramList = apParameters.split("X");
+        QVector<QString> paramList = apParameters.split("X");
         double hole = 0.0, rotation = 0.0;
         auto& apertures = file()->m_apertures;
         switch (slApertureType.indexOf(apType)) {
@@ -1139,7 +1140,7 @@ bool Parser::parseGCode(const QString& gLine)
 bool Parser::parseImagePolarity(const QString& gLine)
 {
     static const QRegExp match(QStringLiteral("^%IP(POS|NEG)\\*%$"));
-    static const QList<QString> slImagePolarity(QString("POS|NEG").split("|"));
+    static const QVector<QString> slImagePolarity(QString("POS|NEG").split("|"));
     if (match.exactMatch(gLine)) {
         switch (slImagePolarity.indexOf(match.cap(1))) {
         case Positive:
@@ -1222,7 +1223,7 @@ bool Parser::parseDCode(const QString& gLine)
 bool Parser::parseUnitMode(const QString& gLine)
 {
     static const QRegExp match(QStringLiteral("^%MO(IN|MM)\\*%$"));
-    static const QList<QString> slUnitType(QString("IN|MM").split("|"));
+    static const QVector<QString> slUnitType(QString("IN|MM").split("|"));
     if (match.exactMatch(gLine)) {
         switch (slUnitType.indexOf(match.cap(1))) {
         case Inches:

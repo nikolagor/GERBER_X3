@@ -87,7 +87,7 @@ void BridgeItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 QPointF BridgeItem::calculate(const QPointF& pos)
 {
-    QList<QGraphicsItem*> col(scene()->collidingItems(this));
+    QVector<QGraphicsItem*> col(scene()->collidingItems(this));
     if (col.isEmpty())
         return pos;
 

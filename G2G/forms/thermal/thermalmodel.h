@@ -21,12 +21,12 @@ class ThermalModel : public QAbstractItemModel {
     //        QIcon icon;
     //        bool create = false;
     //    } Row;
-    //    QList<Row> m_data;
+    //    QVector<Row> m_data;
 
     QIcon repaint(QColor color, const QIcon& icon) const;
 
     ThermalNode* rootItem = nullptr;
-    QList<ThermalNode*> m_data;
+    QVector<ThermalNode*> m_data;
 
 public:
     enum {

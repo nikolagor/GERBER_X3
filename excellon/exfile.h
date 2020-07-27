@@ -7,7 +7,7 @@
 
 namespace Excellon {
 
-class File : public AbstractFile, public QList<Hole> {
+class File : public AbstractFile, public QVector<Hole> {
     QMap<int, double> m_tools;
     friend class Parser;
     Format m_format;

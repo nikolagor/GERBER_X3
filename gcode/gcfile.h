@@ -66,7 +66,7 @@ public:
     void read(QDataStream& stream) override;
     void createGi() override;
 
-    QList<QString> gCodeText() const;
+    QVector<QString> gCodeText() const;
     Tool getTool() const;
     const GCodeParams& gcp() const;
 };

@@ -7,8 +7,9 @@
 #include "edid.h"
 #include "qdruler.h"
 #include "scene.h"
-#include <QGLWidget>
+//#include <QGLWidget>
 #include <QSettings>
+#include <QMouseEvent>
 #include <QTimer>
 #include <QTransform>
 #include <QtWidgets>
@@ -85,9 +86,9 @@ GraphicsView::GraphicsView(QWidget* parent)
     {
         QSettings settings;
         settings.beginGroup("Viewer");
-        setViewport(settings.value("chbxOpenGl").toBool()
-                ? new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel | QGL::Rgba))
-                : new QWidget);
+//        setViewport(settings.value("chbxOpenGl").toBool()
+//                ? new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel | QGL::Rgba))
+//                : new QWidget);
         setRenderHint(QPainter::Antialiasing, settings.value("chbxAntialiasing", false).toBool());
         viewport()->setObjectName("viewport");
         settings.endGroup();
@@ -351,11 +352,11 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
         QMouseEvent releaseEvent(QEvent::MouseButtonRelease, event->localPos(), event->screenPos(), event->windowPos(), Qt::LeftButton, nullptr, event->modifiers());
 #else
-        QMouseEvent releaseEvent(QEvent::MouseButtonRelease, event->localPos(), event->screenPos(), event->windowPos(), Qt::LeftButton, event->buttons() | Qt::LeftButton, event->modifiers());
+        QMouseEvent releaseEvent(QEvent::MouseButtonRelease, event->position(), event->scenePosition(), event->globalPosition(), Qt::LeftButton, event->buttons() | Qt::LeftButton, event->modifiers());
 #endif
         QGraphicsView::mouseReleaseEvent(&releaseEvent);
         setDragMode(ScrollHandDrag);
-        QMouseEvent fakeEvent(event->type(), event->localPos(), event->screenPos(), event->windowPos(), Qt::LeftButton, event->buttons() | Qt::LeftButton, event->modifiers());
+        QMouseEvent fakeEvent(event->type(), event->position(), event->scenePosition(), event->globalPosition(), Qt::LeftButton, event->buttons() | Qt::LeftButton, event->modifiers());
         QGraphicsView::mousePressEvent(&fakeEvent);
     } else if (event->button() == Qt::RightButton) {
         { // удаление мостика
@@ -380,7 +381,7 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::MiddleButton) {
         // отпускаем левую кнопку мыши которую виртуально зажали в mousePressEvent
-        QMouseEvent fakeEvent(event->type(), event->localPos(), event->screenPos(), event->windowPos(), Qt::LeftButton, event->buttons() & ~Qt::LeftButton, event->modifiers());
+        QMouseEvent fakeEvent(event->type(), event->position(), event->scenePosition(), event->globalPosition(), Qt::LeftButton, event->buttons() & ~Qt::LeftButton, event->modifiers());
         QGraphicsView::mouseReleaseEvent(&fakeEvent);
         setDragMode(RubberBandDrag);
         setInteractive(true);

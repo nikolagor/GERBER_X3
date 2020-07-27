@@ -15,10 +15,10 @@ ItemGroup::~ItemGroup()
 
 void ItemGroup::append(GraphicsItem* value)
 {
-    value->m_id = QList::size() ? QList::last()->m_id + 1 : 0;
+    value->m_id = QVector::size() ? QVector::last()->m_id + 1 : 0;
     value->setToolTip((value->toolTip().isEmpty() ? QString() : value->toolTip() + '\n')
         + QString("ID(%1): %2").arg(value->type()).arg(value->m_id));
-    QList::append(value);
+    QVector::append(value);
 }
 
 void ItemGroup::setVisible(bool visible)

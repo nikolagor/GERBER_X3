@@ -28,7 +28,7 @@ class DrillModel : public QAbstractTableModel {
         bool isSlot = false;
         bool create = false;
     };
-    QList<Row> m_data;
+    QVector<Row> m_data;
     int m_type;
 
 signals:

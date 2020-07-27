@@ -180,7 +180,7 @@ private:
 ///
 class ApMacro : public AbstractAperture {
 public:
-    ApMacro(const QString& macro, const QList<QString>& modifiers, const QMap<QString, double>& coefficients, const Format* format);
+    ApMacro(const QString& macro, const QVector<QString>& modifiers, const QMap<QString, double>& coefficients, const Format* format);
     ApMacro(QDataStream& stream, const Format* format)
         : AbstractAperture(format)
     {
@@ -196,22 +196,22 @@ protected:
     virtual void write(QDataStream& stream) const final;
 
 private:
-    QList<QString> m_modifiers;
+    QVector<QString> m_modifiers;
     QMap<QString, double> m_coefficients;
     QString m_macro;
 
-    Path drawCenterLine(const QList<double>& mod);
-    Path drawCircle(const QList<double>& mod);
-    Path drawOutlineCustomPolygon(const QList<double>& mod);
-    Path drawOutlineRegularPolygon(const QList<double>& mod);
-    Path drawVectorLine(const QList<double>& mod);
-    void drawMoire(const QList<double>& mod);
-    void drawThermal(const QList<double>& mod);
+    Path drawCenterLine(const QVector<double>& mod);
+    Path drawCircle(const QVector<double>& mod);
+    Path drawOutlineCustomPolygon(const QVector<double>& mod);
+    Path drawOutlineRegularPolygon(const QVector<double>& mod);
+    Path drawVectorLine(const QVector<double>& mod);
+    void drawMoire(const QVector<double>& mod);
+    void drawThermal(const QVector<double>& mod);
 };
 /////////////////////////////////////////////////////
 /// \brief The ApBlock class
 ///
-class ApBlock : public AbstractAperture, public QList<GraphicObject> {
+class ApBlock : public AbstractAperture, public QVector<GraphicObject> {
 public:
     ApBlock(const Format* format);
     ApBlock(QDataStream& stream, const Format* format)

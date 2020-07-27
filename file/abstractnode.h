@@ -45,7 +45,7 @@ protected:
     const int m_id;
     const QStringList tbStrList;
     AbstractNode* m_parentItem = nullptr;
-    QList<QSharedPointer<AbstractNode>> childItems;
+    QVector<QSharedPointer<AbstractNode>> childItems;
     inline AbstractFile* file() const { return App::project()->file(m_id); }
     //Qt::CheckState m_checkState = Qt::Checked;
 };

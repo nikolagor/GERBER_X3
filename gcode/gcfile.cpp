@@ -15,6 +15,7 @@
 #include <point.h>
 #include <project.h>
 #include <settings.h>
+#include <QRegExp>
 
 namespace GCode {
 
@@ -469,7 +470,7 @@ void File::statFile()
         m_lines.append(formated({ g0(), z(0) })); // Z0 for visible in Candle
     } else {
         QString str(GlobalSettings::gcStart()); //"G21 G17 G90"); //G17 XY plane
-        str.replace(QRegExp("S\\?"), formated({ speed(spindleSpeed()) }));
+        str.replace(QRegularExpression("S\\?"), formated({ speed(spindleSpeed()) }));
         m_lines.append(str);
         m_lines.append(formated({ g0(), z(GCodePropertiesForm::safeZ) })); //HomeZ
     }
@@ -494,7 +495,7 @@ void File::endFile()
     }
 }
 
-QList<QString> File::gCodeText() const { return m_lines; }
+QVector<QString> File::gCodeText() const { return m_lines; }
 
 void File::createGiDrill()
 {

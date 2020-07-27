@@ -83,7 +83,7 @@ void ProfileCreator::createProfile(const Tool& tool, const double depth)
     if (bridgeItems.size()) {
         for (int index = 0; index < m_returnPs.size(); ++index) {
             const Path& path = m_returnPs.at(index);
-            QList<QPair<BridgeItem*, IntPoint>> biStack;
+            QVector<QPair<BridgeItem*, IntPoint>> biStack;
             for (BridgeItem* bi : bridgeItems) {
                 IntPoint pt;
                 if (pointOnPolygon(bi->getPath(), path, &pt))
