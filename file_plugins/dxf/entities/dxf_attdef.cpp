@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "dxf_attdef.h"
 #include "dxf_insert.h"
@@ -191,8 +188,8 @@ Entity::Type AttDef::type() const { return Type::ATTDEF; }
 
 GraphicObject AttDef::toGo() const { return {}; }
 
-void AttDef::write(QDataStream &stream) const { }
+void AttDef::write(QDataStream& stream) const { }
 
-void AttDef::read(QDataStream &stream) { }
+void AttDef::read(QDataStream& stream) { }
 
 }

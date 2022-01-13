@@ -1,15 +1,12 @@
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #pragma once
 #include "tool.h"
@@ -39,16 +36,16 @@ private slots:
     void on_pbEdit_clicked();
 
 private:
-    Tool m_tool;
+    Tool tool_;
     const int counter;
-    const QString m_toolFileName;
+    const QString toolFileName_;
 
     void readTool();
     void updateForm();
     void writeTool() const;
 
     ///////////////////////////
-    QLabel* m_label;
+    QLabel* label_;
     QLabel* lblPixmap;
     QLabel* lblName;
     QPushButton* pbSelect;

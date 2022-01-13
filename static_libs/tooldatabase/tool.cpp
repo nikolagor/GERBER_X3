@@ -2,20 +2,18 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "tool.h"
 #include "datastream.h"
+#include "settings.h"
 #include <QApplication>
 #include <QDebug>
 #include <QFile>
@@ -28,7 +26,8 @@
 
 int toolId = qRegisterMetaType<Tool>("Tool");
 
-QDataStream& operator<<(QDataStream& stream, const Tool& tool) {
+QDataStream& operator<<(QDataStream& stream, const Tool& tool)
+{
     stream << tool.m_name;
     stream << tool.m_note;
     stream << tool.m_type;
@@ -44,7 +43,8 @@ QDataStream& operator<<(QDataStream& stream, const Tool& tool) {
     stream << tool.m_id;
     return stream;
 }
-QDataStream& operator>>(QDataStream& stream, Tool& tool) {
+QDataStream& operator>>(QDataStream& stream, Tool& tool)
+{
     stream >> tool.m_name;
     stream >> tool.m_note;
     stream >> tool.m_type;
@@ -61,47 +61,17 @@ QDataStream& operator>>(QDataStream& stream, Tool& tool) {
     return stream;
 }
 
-QDebug operator<<(QDebug debug, const Tool& t) {
+QDebug operator<<(QDebug debug, const Tool& t)
+{
     QDebugStateSaver saver(debug);
     debug.nospace() << "T(D " << t.m_diameter << ", ID " << t.m_id << ')';
     return debug;
 }
 
-Tool::Tool()
-    : m_name(QObject::tr("Default"))
-    , m_angle(0.0)
-    , m_diameter(1.0)
-    , m_feedRate(100.0)
-    , m_oneTurnCut(0.1)
-    , m_passDepth(2.0)
-    , m_plungeRate(600.0)
-    , m_spindleSpeed(12000.0)
-    , m_stepover(0.5)
-    , m_id(0)
-    , m_type(EndMill)
-    , m_autoName(true)
+Tool::Tool() { }
 
+QString Tool::nameEnc() const
 {
-}
-
-Tool::Tool(int)
-    : m_name(QObject::tr("Default"))
-    , m_angle(0.0)
-    , m_diameter(0.0)
-    , m_feedRate(100.0)
-    , m_oneTurnCut(0.1)
-    , m_passDepth(2.0)
-    , m_plungeRate(600.0)
-    , m_spindleSpeed(12000.0)
-    , m_stepover(0.5)
-    , m_id(0)
-    , m_type(EndMill)
-    , m_autoName(true) {
-}
-
-QString Tool::name() const { return m_name; }
-
-QString Tool::nameEnc() const {
     switch (m_type) {
     case Tool::Drill:
         return QString("D-D%1MM").arg(m_diameter);
@@ -115,100 +85,48 @@ QString Tool::nameEnc() const {
         return {};
     }
 }
-
-void Tool::setName(const QString& name) {
-    m_hash = 0;
-    m_name = name;
-}
+QString Tool::name() const { return m_name; }
+void Tool::setName(const QString& name) { m_hash = {}, m_name = name; }
 
 QString Tool::note() const { return m_note; }
-
-void Tool::setNote(const QString& note) {
-    m_hash = 0;
-    m_note = note;
-}
+void Tool::setNote(const QString& note) { m_hash = {}, m_note = note; }
 
 Tool::Type Tool::type() const { return m_type; }
-
-void Tool::setType(int type) {
-    m_hash = 0;
-    m_type = static_cast<Type>(type);
-}
+void Tool::setType(int type) { m_hash = {}, m_type = static_cast<Type>(type); }
 
 double Tool::angle() const { return m_angle; }
-
-void Tool::setAngle(double angle) {
-    m_hash = 0;
-    m_angle = angle;
-}
+void Tool::setAngle(double angle) { m_hash = {}, m_angle = angle; }
 
 double Tool::diameter() const { return m_diameter; }
-
-void Tool::setDiameter(double diameter) {
-    m_hash = 0;
-    m_diameter = diameter;
-    updatePath();
-}
+void Tool::setDiameter(double diameter) { m_hash = {}, m_diameter = diameter, updatePath(); }
 
 double Tool::feedRateMmS() const { return m_feedRate / 60.0; }
-
 double Tool::feedRate() const { return m_feedRate; }
 
-void Tool::setFeedRate(double feedRate) {
-    m_hash = 0;
-    m_feedRate = feedRate;
-}
-
+void Tool::setFeedRate(double feedRate) { m_hash = {}, m_feedRate = feedRate; }
 double Tool::oneTurnCut() const { return m_oneTurnCut; }
 
-void Tool::setOneTurnCut(double oneTurnCut) {
-    m_hash = 0;
-    m_oneTurnCut = oneTurnCut;
-}
-
+void Tool::setOneTurnCut(double oneTurnCut) { m_hash = {}, m_oneTurnCut = oneTurnCut; }
 double Tool::passDepth() const { return m_passDepth; }
 
-void Tool::setPassDepth(double passDepth) {
-    m_hash = 0;
-    m_passDepth = passDepth;
-}
-
+void Tool::setPassDepth(double passDepth) { m_hash = {}, m_passDepth = passDepth; }
 double Tool::plungeRate() const { return m_plungeRate; }
 
-void Tool::setPlungeRate(double plungeRate) {
-    m_hash = 0;
-    m_plungeRate = plungeRate;
-}
-
+void Tool::setPlungeRate(double plungeRate) { m_hash = {}, m_plungeRate = plungeRate; }
 double Tool::spindleSpeed() const { return m_spindleSpeed; }
 
-void Tool::setSpindleSpeed(double spindleSpeed) {
-    m_hash = 0;
-    m_spindleSpeed = spindleSpeed;
-}
-
+void Tool::setSpindleSpeed(double spindleSpeed) { m_hash = {}, m_spindleSpeed = spindleSpeed; }
 double Tool::stepover() const { return m_stepover; }
 
-void Tool::setStepover(double stepover) {
-    m_hash = 0;
-    m_stepover = stepover;
-}
-
+void Tool::setStepover(double stepover) { m_hash = {}, m_stepover = stepover; }
 bool Tool::autoName() const { return m_autoName; }
 
-void Tool::setAutoName(bool autoName) {
-    m_hash = 0;
-    m_autoName = autoName;
-}
-
+void Tool::setAutoName(bool autoName) { m_hash = {}, m_autoName = autoName; }
 int Tool::id() const { return m_id; }
 
-void Tool::setId(int id) {
-    m_hash = 0;
-    m_id = id;
-}
-
-double Tool::getDiameter(double depth) const {
+void Tool::setId(int id) { m_hash = {}, m_id = id; }
+double Tool::getDiameter(double depth) const
+{
     if (type() == Engraver && depth > 0.0 && angle() > 0.0 && angle() <= 90.0) {
         double a = qDegreesToRadians(90 - angle() / 2);
         double d = depth * cos(a) / sin(a);
@@ -217,7 +135,8 @@ double Tool::getDiameter(double depth) const {
     return diameter();
 }
 
-double Tool::getDepth() const {
+double Tool::getDepth() const
+{
     switch (m_type) {
     case Tool::Drill:
         return m_diameter * 0.5 * tan(qDegreesToRadians((180.0 - m_angle) * 0.5));
@@ -228,37 +147,42 @@ double Tool::getDepth() const {
     }
 }
 
-void Tool::read(const QJsonObject& json) {
+void Tool::read(const QJsonObject& json)
+{
     m_angle = json["angle"].toDouble();
+    m_autoName = json["autoName"].toBool();
     m_diameter = json["diameter"].toDouble();
     m_feedRate = json["feedRate"].toDouble();
+    m_id = json["id"].toInt();
+    m_name = json["name"].toString();
+    m_note = json["note"].toString();
     m_oneTurnCut = json["oneTurnCut"].toDouble();
     m_passDepth = json["passDepth"].toDouble();
     m_plungeRate = json["plungeRate"].toDouble();
     m_spindleSpeed = json["spindleSpeed"].toInt();
     m_stepover = json["stepover"].toDouble();
-    m_name = json["name"].toString();
-    m_note = json["note"].toString();
     m_type = static_cast<Type>(json["type"].toInt());
-    m_autoName = json["autoName"].toBool();
 }
 
-void Tool::write(QJsonObject& json) const {
+void Tool::write(QJsonObject& json) const
+{
     json["angle"] = m_angle;
+    json["autoName"] = m_autoName;
     json["diameter"] = m_diameter;
     json["feedRate"] = m_feedRate;
+    json["id"] = m_id;
+    json["name"] = m_name;
+    json["note"] = m_note;
     json["oneTurnCut"] = m_oneTurnCut;
     json["passDepth"] = m_passDepth;
     json["plungeRate"] = m_plungeRate;
     json["spindleSpeed"] = m_spindleSpeed;
     json["stepover"] = m_stepover;
-    json["name"] = m_name;
-    json["note"] = m_note;
     json["type"] = m_type;
-    json["autoName"] = m_autoName;
 }
 
-bool Tool::isValid() const {
+bool Tool::isValid() const
+{
     do {
         if (qFuzzyIsNull(m_diameter))
             break;
@@ -275,7 +199,8 @@ bool Tool::isValid() const {
     return false;
 }
 
-QIcon Tool::icon() const {
+QIcon Tool::icon() const
+{
     switch (m_type) {
     case Tool::Drill:
         return QIcon::fromTheme("drill");
@@ -290,7 +215,8 @@ QIcon Tool::icon() const {
     }
 }
 
-QString Tool::errorStr() const {
+QString Tool::errorStr() const
+{
     QString errorString;
     if (qFuzzyIsNull(m_diameter))
         errorString += "Tool diameter = 0!\n";
@@ -309,11 +235,13 @@ QString Tool::errorStr() const {
     return errorString;
 }
 
-void Tool::errorMessageBox(QWidget* parent) const {
+void Tool::errorMessageBox(QWidget* parent) const
+{
     QMessageBox::warning(parent, QObject::tr("No valid tool...!!!"), errorStr());
 }
 
-size_t Tool::hash() const {
+size_t Tool::hash() const
+{
     if (m_hash)
         return m_hash;
 
@@ -340,8 +268,11 @@ size_t Tool::hash() const {
     return m_hash;
 }
 
-size_t Tool::hash2() const {
-    if (m_hash2)
+size_t Tool::hash2() const
+{
+    if (!m_hash) {
+        hash();
+    } else
         return m_hash2;
 
     QByteArray hashData;
@@ -359,7 +290,8 @@ size_t Tool::hash2() const {
 
 QPainterPath Tool::path(const QPointF& pt) const { return m_path.translated(pt); }
 
-void Tool::updatePath(double depth) {
+void Tool::updatePath(double depth)
+{
     const double diameter = getDiameter(depth);
     const double lineKoeff = diameter * 0.7;
     m_path = QPainterPath();
@@ -375,14 +307,17 @@ void Tool::updatePath(double depth) {
 ///
 ToolHolder::ToolHolder() { }
 
-void ToolHolder::readTools() {
+void ToolHolder::readTools()
+{
     QJsonDocument loadDoc;
 
-    QFile file(qApp->applicationDirPath() + QStringLiteral("/tools.json"));
+    QFile file(settingsPath + QStringLiteral("/tools.json"));
 
-    if (file.exists() && file.open(QIODevice::ReadOnly)) {
+    if (!file.exists())
+        file.setFileName(qApp->applicationDirPath() + "/tools.json"); // fallback path
+    if (file.exists() && file.open(QIODevice::ReadOnly))
         loadDoc = QJsonDocument::fromJson(file.readAll());
-    } else {
+    else {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         file.setFileName(qApp->applicationDirPath() + QStringLiteral("/tools.dat"));
         if (file.exists() && file.open(QIODevice::ReadOnly)) {
@@ -397,7 +332,8 @@ void ToolHolder::readTools() {
     readTools(loadDoc.object());
 }
 
-void ToolHolder::readTools(const QJsonObject& json) {
+void ToolHolder::readTools(const QJsonObject& json)
+{
     QJsonArray toolArray = json["tools"].toArray();
     for (int treeIndex = 0; treeIndex < toolArray.size(); ++treeIndex) {
         Tool tool;
@@ -409,7 +345,8 @@ void ToolHolder::readTools(const QJsonObject& json) {
     }
 }
 
-void ToolHolder::writeTools(QJsonObject& json) {
+void ToolHolder::writeTools(QJsonObject& json)
+{
     QJsonArray toolArray;
     for (auto& [id, tool] : m_tools) {
         QJsonObject toolObject;

@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "toolmodel.h"
 #include "app.h"
@@ -24,8 +21,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMimeData>
-
-#include "leakdetector.h"
 
 ToolModel::ToolModel(QObject* parent)
     : QAbstractItemModel(parent)
@@ -239,7 +234,7 @@ Qt::DropActions ToolModel::supportedDropActions() const { return Qt::MoveAction 
 
 void ToolModel::exportTools()
 {
-    QFile file(qApp->applicationDirPath() + QStringLiteral("/tools.json"));
+    QFile file(settingsPath + QStringLiteral("/tools.json"));
     if (!file.open(QIODevice::WriteOnly)) {
         qDebug() << file.errorString();
         return;
@@ -296,11 +291,13 @@ void ToolModel::importTools()
 {
     QJsonDocument loadDoc;
 
-    QFile file(qApp->applicationDirPath() + QStringLiteral("/tools.json"));
+    QFile file(settingsPath + QStringLiteral("/tools.json"));
 
-    if (file.exists() && file.open(QIODevice::ReadOnly)) {
+    if (!file.exists())
+        file.setFileName(qApp->applicationDirPath() + "/tools.json");
+    if (file.exists() && file.open(QIODevice::ReadOnly))
         loadDoc = QJsonDocument::fromJson(file.readAll());
-    } else {
+    else {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         file.setFileName(qApp->applicationDirPath() + QStringLiteral("/tools.dat"));
         if (file.exists() && file.open(QIODevice::ReadOnly)) {

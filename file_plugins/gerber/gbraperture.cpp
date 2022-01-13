@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "gbraperture.h"
 #include "gbrfile.h"
@@ -146,22 +143,22 @@ Path AbstractAperture::drawDrill(const State& state)
 
 void AbstractAperture::transform(Path& poligon, const State& state)
 {
-    bool fl = Area(poligon) < 0;
-    for (IntPoint& pt : poligon) {
+    QMatrix m;
+    if (!qFuzzyIsNull(state.rotating()))
+        m.rotate(state.rotating());
+    if (!qFuzzyCompare(state.scaling(), 1.0))
+        m.scale(state.scaling(), state.scaling());
+    if (state.mirroring() & X_Mirroring)
+        m.scale(-1, +1);
+    if (state.mirroring() & Y_Mirroring)
+        m.scale(+1, -1);
 
-        if (state.mirroring() & X_Mirroring)
-            pt.X = -pt.X;
-        if (state.mirroring() & Y_Mirroring)
-            pt.Y = -pt.Y;
-        if (state.rotating() != 0.0 || state.scaling() != 1.0) {
-            const double tmpAangle = qDegreesToRadians(state.rotating() - IntPoint().angleTo(pt));
-            const double length = IntPoint().distTo(pt) * state.scaling();
-            pt = IntPoint(static_cast<cInt>(qCos(tmpAangle) * length), static_cast<cInt>(qSin(tmpAangle) * length));
-        }
+    if (!m.isIdentity()) {
+        for (IntPoint& pt : poligon)
+            pt = m.map(pt);
+        if (m.m11() < 0 ^ m.m22() < 0)
+            ReversePath(poligon);
     }
-
-    if (fl != (Area(poligon) < 0))
-        ReversePath(poligon);
 }
 
 /////////////////////////////////////////////////////
@@ -344,7 +341,7 @@ QString ApPolygon::name() const { return QString("P(Ø%1, N%2)").arg(m_diam).arg
 
 ApertureType ApPolygon::type() const { return Polygon; }
 
-bool ApPolygon::fit(double toolDiam) const { return m_diam * cos(M_PI / m_verticesCount) > toolDiam; }
+bool ApPolygon::fit(double toolDiam) const { return m_diam * cos(pi / m_verticesCount) > toolDiam; }
 
 void ApPolygon::read(QDataStream& stream)
 {

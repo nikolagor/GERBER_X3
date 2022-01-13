@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "exparser.h"
 #include "exfile.h"
@@ -22,7 +19,6 @@
 #include <QFile>
 #include <cmath>
 
-#include "leakdetector.h"
 #include "utils.h"
 
 namespace Excellon {
@@ -274,15 +270,16 @@ bool Parser::parsePos(const QString& line)
         if (!X.size() && !Y.size())
             return false;
 
-        if (X.size())
+        if (X.size()) {
             m_state.rawPos.X = QString { CtreCapTo(X) };
-        if (Y.size())
+            parseNumber(CtreCapTo(X), m_state.pos.rx());
+        }
+        if (Y.size()) {
             m_state.rawPos.Y = QString { CtreCapTo(Y) };
+            parseNumber(CtreCapTo(Y), m_state.pos.ry());
+        }
         if (A.size())
             m_state.rawPos.A = QString { CtreCapTo(A) };
-
-        parseNumber(CtreCapTo(X), m_state.pos.rx());
-        parseNumber(CtreCapTo(Y), m_state.pos.ry());
 
         switch (m_state.wm) {
         case DrillMode:
@@ -496,12 +493,12 @@ QPolygonF Parser::arc(QPointF p1, QPointF p2, QPointF center)
         const int intSteps = App::settings().clpCircleSegments(radius * dScale); //MinStepsPerCircle;
 
         if (m_state.gCode == G02 && stop >= start)
-            stop -= 2.0 * M_PI;
+            stop -= 2.0 * pi;
         else if (m_state.gCode == G03 && stop <= start)
-            stop += 2.0 * M_PI;
+            stop += 2.0 * pi;
 
         double angle = qAbs(stop - start);
-        double steps = qMax(static_cast<int>(ceil(angle / (2.0 * M_PI) * intSteps)), 2);
+        double steps = qMax(static_cast<int>(ceil(angle / (2.0 * pi) * intSteps)), 2);
         double delta_angle = da_sign[m_state.gCode] * angle * 1.0 / steps;
         for (int i = 0; i < steps; i++) {
             double theta = start + delta_angle * (i + 1);

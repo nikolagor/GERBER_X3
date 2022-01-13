@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "gcpocketoffset.h"
 #include "gcfile.h"
@@ -21,8 +18,6 @@
 #include "settings.h"
 #include <QDialog>
 #include <QElapsedTimer>
-
-#include "leakdetector.h"
 
 namespace GCode {
 PocketCreator::PocketCreator()
@@ -207,7 +202,7 @@ void PocketCreator::createMultiTool(mvector<Tool>& tools, double depth)
 
     auto removeSmall = [](Paths& paths, double dOffset) {
         //return;
-        const auto ta = dOffset * dOffset * M_PI;
+        const auto ta = dOffset * dOffset * pi;
         const auto tp = dOffset * 4;
         for (size_t i = 0; i < paths.size(); ++i) {
             const auto a = abs(Area(paths[i]));

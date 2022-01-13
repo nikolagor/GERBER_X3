@@ -1,15 +1,12 @@
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #pragma once
 
@@ -19,6 +16,9 @@
 #include <variant>
 
 namespace Dxf {
+
+template <typename T>
+struct TypenameTest;
 
 class CodeData;
 using variant = std::variant<int16_t, int32_t, int64_t, double, QString>;
@@ -60,7 +60,7 @@ public:
             using Fr = std::decay_t<decltype(arg)>;
             bool ok = true;
             T val;
-            if constexpr /**/ (std::is_same_v<Fr, To>) {
+            /*  */ if constexpr (std::is_same_v<Fr, To>) {
                 return arg;
             } else if constexpr (std::is_same_v<To, QString> && std::is_integral_v<Fr>) {
                 //                qDebug()
@@ -93,7 +93,7 @@ public:
                 //                         << "\n\tTo" << typeid(To).name();
                 return T(arg);
             } else
-                static_assert(always_false_v<T>, "non-exhaustive visitor!");
+                TypenameTest<T> {}; //static_assert(always_false_v<T>, "non-exhaustive visitor!");
             if (!ok)
                 throw QString("CodeData::operator T(), %1 to %2 from %3")
                     .arg(typeid(Fr).name())

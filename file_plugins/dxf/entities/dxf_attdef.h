@@ -1,15 +1,12 @@
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #pragma once
 
@@ -20,9 +17,10 @@ struct AttDef final : Entity {
 
     // EntityInterface
 public:
-//    void draw(const InsertEntity* const i = nullptr) const override;
+    //    void draw(const InsertEntity* const i = nullptr) const override;
     void parse(CodeData& code) override;
-    Type type() const override;;
+    Type type() const override;
+    ;
     GraphicObject toGo() const override;
     void write(QDataStream& stream) const override;
     void read(QDataStream& stream) override;

@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "colorselector.h"
 
@@ -22,8 +19,6 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPushButton>
-
-#include "leakdetector.h"
 
 class PushButton : public QPushButton {
     //    Q_OBJECT
@@ -99,7 +94,9 @@ ColorSelector::ColorSelector(QColor& color, const QColor& defaultColor, QWidget*
     pbResetColor = new QPushButton(tr("Reset"), this);
     pbResetColor->setObjectName(QString::fromUtf8("pbResetColor"));
     horizontalLayout->addWidget(pbResetColor);
-
+    horizontalLayout->setStretch(1, 1);
+    horizontalLayout->setStretch(2, 1);
+    horizontalLayout->setStretch(3, 0);
     connect(pbResetColor, &QPushButton::clicked, this, &ColorSelector::resetColor);
     connect(pbResetColor, &QPushButton::clicked, this, &ColorSelector::updateName);
     connect(pbSelectColor, &QPushButton::clicked, this, &ColorSelector::updateName);

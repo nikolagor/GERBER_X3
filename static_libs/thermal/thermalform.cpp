@@ -2,23 +2,19 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "thermalform.h"
 #include "ui_thermalform.h"
 
 #include "graphicsview.h"
-#include <myclipper.h>
 #include "project.h"
 #include "scene.h"
 #include "settings.h"
@@ -26,8 +22,8 @@
 #include "thermalmodel.h"
 #include "thermalnode.h"
 #include "thermalpreviewitem.h"
-#include "tooldatabase.h"
-#include "tooleditdialog.h"
+#include "toolpch.h"
+#include <myclipper.h>
 
 #include <QCheckBox>
 #include <QDockWidget>
@@ -36,8 +32,6 @@
 #include <QMessageBox>
 #include <QPicture>
 #include <QTimer>
-
-#include "leakdetector.h"
 
 enum { Size = 24 };
 

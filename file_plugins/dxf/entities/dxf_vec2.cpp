@@ -2,20 +2,16 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "dxf_vec2.h"
-
 
 Vec2 Vec2::from_angle(double angle, double length) { return { cos(angle) * length, sin(angle) * length }; }
 
@@ -84,7 +80,7 @@ bool Vec2::operator<(Vec2 other)
 
 Vec2 Vec2::operator+(Vec2 other) { return { x + other.x, y + other.y }; }
 
-Vec2 &Vec2::operator+=(Vec2 other)
+Vec2& Vec2::operator+=(Vec2 other)
 {
     x += other.x;
     y += other.y;
@@ -93,7 +89,7 @@ Vec2 &Vec2::operator+=(Vec2 other)
 
 Vec2 Vec2::operator-(Vec2 other) { return { x - other.x, y - other.y }; }
 
-Vec2 &Vec2::operator-=(Vec2 other)
+Vec2& Vec2::operator-=(Vec2 other)
 {
     x -= other.x;
     y -= other.y;
@@ -102,7 +98,7 @@ Vec2 &Vec2::operator-=(Vec2 other)
 
 Vec2 Vec2::operator*(double other) { return { x * other, y * other }; }
 
-Vec2 &Vec2::operator*=(double other)
+Vec2& Vec2::operator*=(double other)
 {
     x *= other;
     y *= other;

@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "voronoiform.h"
 #include "ui_voronoiform.h"
@@ -21,11 +18,10 @@
 #include "settings.h"
 #include <QMessageBox>
 
-#include "leakdetector.h"
-
 VoronoiForm::VoronoiForm(QWidget* parent)
     : FormsUtil(new GCode::VoronoiCreator, parent)
-    , ui(new Ui::VoronoiForm) {
+    , ui(new Ui::VoronoiForm)
+{
     ui->setupUi(this);
 
     ui->pbClose->setIcon(QIcon::fromTheme("window-close"));
@@ -61,7 +57,8 @@ VoronoiForm::VoronoiForm(QWidget* parent)
     updateName();
 }
 
-VoronoiForm::~VoronoiForm() {
+VoronoiForm::~VoronoiForm()
+{
     MySettings settings;
     settings.beginGroup("VoronoiForm");
     settings.setValue(ui->dsbxPrecision);
@@ -72,7 +69,8 @@ VoronoiForm::~VoronoiForm() {
     delete ui;
 }
 
-void VoronoiForm::createFile() {
+void VoronoiForm::createFile()
+{
     const auto tool { ui->toolHolder->tool() };
     if (!tool.isValid()) {
         tool.errorMessageBox(this);
@@ -140,16 +138,19 @@ void VoronoiForm::createFile() {
     createToolpath();
 }
 
-void VoronoiForm::updateName() {
+void VoronoiForm::updateName()
+{
     ui->leName->setText(tr("Voronoi"));
     setWidth(0.0);
 }
 
-void VoronoiForm::on_leName_textChanged(const QString& arg1) {
+void VoronoiForm::on_leName_textChanged(const QString& arg1)
+{
     m_fileName = arg1;
 }
 
-void VoronoiForm::setWidth(double) {
+void VoronoiForm::setWidth(double)
+{
     const auto tool { ui->toolHolder->tool() };
     const double d = tool.getDiameter(ui->dsbxDepth->value());
     if (ui->dsbxWidth->value() > 0.0 && (qFuzzyCompare(ui->dsbxWidth->value(), d) || ui->dsbxWidth->value() < d)) {
@@ -158,9 +159,11 @@ void VoronoiForm::setWidth(double) {
     }
 }
 
-void VoronoiForm::editFile(GCode::File* /*file*/) {
+void VoronoiForm::editFile(GCode::File* /*file*/)
+{
 }
 
-void VoronoiForm::on_cbxSolver_currentIndexChanged(int index) {
+void VoronoiForm::on_cbxSolver_currentIndexChanged(int index)
+{
     ui->dsbxPrecision->setEnabled(index);
 }

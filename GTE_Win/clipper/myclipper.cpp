@@ -1,17 +1,14 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
 * Copyright :  Damir Bakiev 2016-2020                                          *
-*                                                                              *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "myclipper.h"
 #include <QElapsedTimer>
@@ -58,7 +55,7 @@ double Angle(const IntPoint& pt1, const IntPoint& pt2)
 {
     const double dx = pt2.X - pt1.X;
     const double dy = pt2.Y - pt1.Y;
-    const double theta = atan2(-dy, dx) * 360.0 / M_2PI;
+    const double theta = atan2(-dy, dx) * 360.0 / two_pi;
     const double theta_normalized = theta < 0 ? theta + 360 : theta;
     if (qFuzzyCompare(theta_normalized, double(360)))
         return 0.0;
@@ -97,8 +94,8 @@ Path CirclePath(double diametr, const IntPoint& center)
     Path poligon(intSteps);
     for (int i = 0; i < intSteps; ++i) {
         poligon[i] = IntPoint(
-            static_cast<cInt>(cos(i * 2 * M_PI / intSteps) * radius) + center.X,
-            static_cast<cInt>(sin(i * 2 * M_PI / intSteps) * radius) + center.Y);
+            static_cast<cInt>(cos(i * 2 * pi / intSteps) * radius) + center.X,
+            static_cast<cInt>(sin(i * 2 * pi / intSteps) * radius) + center.Y);
     }
     return poligon;
 }

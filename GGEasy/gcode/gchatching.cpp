@@ -1,17 +1,14 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "gchatching.h"
 
@@ -22,13 +19,11 @@
 #include <execution>
 #endif
 #include "point.h"
-#include <QFuture>
-#include <QtConcurrent>
+//#include <QFuture>
+//#include <QtConcurrent>
 #include <algorithm>
 #include <forward_list>
 #include <ranges>
-
-#include "leakdetector.h"
 
 //struct sort_fn {
 //    template <std::random_access_iterator I, std::sentinel_for<I> S, class Comp = std::ranges::less, class Proj = std::identity>

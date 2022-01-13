@@ -2,26 +2,21 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "settings.h"
 #include "app.h"
 #include "graphicsview.h"
 #include <cmath>
-
-#ifndef M_PI
-#define M_PI (3.1415926535897932384626433832795)
-#endif
+#include <numbers>
+using std::numbers::pi;
 
 /*G-Code*/
 AppSettings::AppSettings()
@@ -45,7 +40,7 @@ int AppSettings::theme() { return m_theme; }
 int AppSettings::clpCircleSegments(double radius)
 {
     const double length = m_clpMinCircleSegmentLength; // mm
-    const int destSteps = static_cast<int>(M_PI / asin((length * 0.5) / (radius)));
+    const int destSteps = static_cast<int>(pi / asin((length * 0.5) / (radius)));
     int intSteps = m_clpMinCircleSegments;
     while (intSteps < destSteps)
         intSteps <<= 1;

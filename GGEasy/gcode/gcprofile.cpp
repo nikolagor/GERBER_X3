@@ -1,25 +1,20 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "gcprofile.h"
 #include "gcfile.h"
 
 #include "bridgeitem.h"
 #include "scene.h"
-
-#include "leakdetector.h"
 
 namespace GCode {
 ProfileCreator::ProfileCreator()
@@ -68,6 +63,8 @@ void ProfileCreator::createProfile(const Tool& tool, const double depth)
 
         if (m_gcp.side() == On && m_workingRawPs.size()) {
             m_returnPss.reserve(m_returnPss.size() + m_workingRawPs.size());
+            mergePaths(m_workingRawPs);
+            sortBE(m_workingRawPs);
             for (auto&& path : m_workingRawPs)
                 m_returnPss.push_back({ std::move(path) });
         }

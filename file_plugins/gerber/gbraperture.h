@@ -1,20 +1,19 @@
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #pragma once
 #include "gbrtypes.h"
 
 #include <QtMath>
+#include <numbers>
+#include <variant>
 
 namespace Gerber {
 
@@ -213,7 +212,7 @@ private:
     {
         const double dx = pt2.X - pt1.X;
         const double dy = pt2.Y - pt1.Y;
-        const double theta = atan2(-dy, dx) * 360.0 / M_2PI;
+        const double theta = atan2(-dy, dx) * 360.0 / two_pi;
         const double theta_normalized = theta < 0 ? theta + 360 : theta;
         if (qFuzzyCompare(theta_normalized, double(360)))
             return 0.0;
@@ -249,4 +248,7 @@ protected:
     virtual void read(QDataStream& stream);
     virtual void write(QDataStream& stream) const;
 };
+
+using ApertureV = std::variant<ApCircle, ApRectangle, ApObround, ApPolygon, ApMacro, ApBlock>;
+
 }

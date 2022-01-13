@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "dxf_polyline.h"
 #include "dxf_file.h"
@@ -129,17 +126,17 @@ GraphicObject PolyLine::toGo() const
     auto p(path2.toSubpathPolygons(m2));
 #endif
     return { id, p.value(0), {} };
-    }
+}
 
-    void PolyLine::write(QDataStream &stream) const
-    {
+void PolyLine::write(QDataStream& stream) const
+{
     stream << polylineFlags;
     stream << startWidth;
     stream << endWidth;
 }
 
-    void PolyLine::read(QDataStream &stream)
-    {
+void PolyLine::read(QDataStream& stream)
+{
     stream >> polylineFlags;
     stream >> startWidth;
     stream >> endWidth;

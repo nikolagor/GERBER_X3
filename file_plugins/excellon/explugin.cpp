@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "explugin.h"
 #include "exfile.h"
@@ -29,18 +26,10 @@
 #include "interfaces/file.h"
 #include "utils.h"
 
-#include "leakdetector.h"
-
 #include <QComboBox>
 #include <QJsonObject>
 
 namespace Excellon {
-
-#ifndef M_PI
-#define M_PI 3.1415926535897932384626433832795
-#endif
-
-//const int id1 = qRegisterMetaType<Gerber::File*>("Gerber::GFile*");
 
 Plugin::Plugin(QObject* parent)
     : QObject(parent)

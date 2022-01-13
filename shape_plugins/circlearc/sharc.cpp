@@ -2,25 +2,20 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
 * Copyright :  Damir Bakiev 2016-2020                                          *
-*                                                                              *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "sharc.h"
 #include "scene.h"
 #include "shhandler.h"
 #include <QIcon>
 #include <QtMath>
-
-#include "leakdetector.h"
 
 namespace Shapes {
 
@@ -56,16 +51,16 @@ void Arc::redraw()
     const int intSteps = App::settings().clpCircleSegments(m_radius);
     const cInt radius = static_cast<cInt>(m_radius * uScale);
     const IntPoint center((handlers[Center]->pos()));
-    const double stepAngle = M_2PI / intSteps;
+    const double stepAngle = two_pi / intSteps;
 
-    double angle1 = M_2PI - qDegreesToRadians(l1.angle());
-    double angle2 = M_2PI - qDegreesToRadians(l2.angle());
+    double angle1 = two_pi - qDegreesToRadians(l1.angle());
+    double angle2 = two_pi - qDegreesToRadians(l2.angle());
 
-    if (qFuzzyCompare(angle1, M_2PI))
+    if (qFuzzyCompare(angle1, two_pi))
         angle1 = 0.0;
     double angle = angle2 - angle1;
     if (angle < 0.0)
-        angle = M_2PI + angle;
+        angle = two_pi + angle;
 
     Path& path = m_paths.front();
     path.clear();

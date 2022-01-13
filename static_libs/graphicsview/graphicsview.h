@@ -1,15 +1,12 @@
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #pragma once
 #include <QGraphicsItem>
@@ -36,6 +33,8 @@ public:
     void zoomOut();
     void fitInView(QRectF destRect, bool withBorders = true);
 
+    void setRuler(bool ruller) { ruler_ = ruller; }
+
     double scaleFactor();
     QPointF mappedPos(QMouseEvent* event) const;
 
@@ -57,6 +56,7 @@ private:
     Ruler* hRuler;
     Ruler* vRuler;
     Scene* m_scene;
+    bool ruler_ {};
 
     void updateRuler();
     template <class T>

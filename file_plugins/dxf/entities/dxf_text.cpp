@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "dxf_text.h"
 #include "dxf_file.h"
@@ -226,7 +223,7 @@ GraphicObject Text::toGo() const
     return { id, {}, paths };
 }
 
-void Text::write(QDataStream &stream) const
+void Text::write(QDataStream& stream) const
 {
     stream << text;
     stream << textStyleName;
@@ -243,7 +240,7 @@ void Text::write(QDataStream &stream) const
     stream << rotation;
 }
 
-void Text::read(QDataStream &stream)
+void Text::read(QDataStream& stream)
 {
     stream >> text;
     stream >> textStyleName;

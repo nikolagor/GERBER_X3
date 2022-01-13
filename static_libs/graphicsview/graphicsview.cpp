@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "graphicsview.h"
 #include "edid.h"
@@ -38,10 +35,23 @@
 #include <QScrollBar>
 #include <cmath>
 
-#include "leakdetector.h"
-
 constexpr double zoomFactor = 1.5;
 constexpr double zoomFactorAnim = 1.7;
+
+void setCursor(QWidget* w)
+{
+    enum {
+        Size = 21,
+        Mid = 10
+    };
+    QPixmap cursor(Size, Size);
+    cursor.fill(Qt::transparent);
+    QPainter p(&cursor);
+    p.setPen(QPen(QColor(App::settings().guiColor(GuiColors::Background).rgb() ^ 0xFFFFFF), 1.0));
+    p.drawLine(0, Mid, Size, Mid);
+    p.drawLine(Mid, 0, Mid, Size);
+    w->setCursor(QCursor { cursor, Mid, Mid });
+}
 
 GraphicsView::GraphicsView(QWidget* parent)
     : QGraphicsView(parent)
@@ -49,20 +59,6 @@ GraphicsView::GraphicsView(QWidget* parent)
     setCacheMode(/*CacheBackground*/ CacheNone);
     setOptimizationFlag(DontSavePainterState);
     setOptimizationFlag(DontAdjustForAntialiasing);
-
-    { //set Cursor
-        enum {
-            Size = 21,
-            Mid = 10
-        };
-        QPixmap cursor(Size, Size);
-        cursor.fill(Qt::transparent);
-        QPainter p(&cursor);
-        p.setPen(QPen(QColor(App::settings().guiColor(GuiColors::Background).rgb() ^ 0xFFFFFF), 1.0));
-        p.drawLine(0, Mid, Size, Mid);
-        p.drawLine(Mid, 0, Mid, Size);
-        setCursor(QCursor{ cursor, Mid, Mid });
-    }
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 14, 0))
     setOptimizationFlag(DontClipPainter);
@@ -78,19 +74,17 @@ GraphicsView::GraphicsView(QWidget* parent)
     // add two rulers on top and left.
     setViewportMargins(Ruler::Breadth, 0, 0, Ruler::Breadth);
 
-    // add grid layout
-    QGridLayout* gridLayout = new QGridLayout(this);
-    gridLayout->setSpacing(0);
-
     // create rulers
     hRuler = new Ruler(Ruler::Horizontal, this);
     vRuler = new Ruler(Ruler::Vertical, this);
     hRuler->SetMouseTrack(true);
     vRuler->SetMouseTrack(true);
+    ::setCursor(hRuler);
+    ::setCursor(vRuler);
 
     // add items to grid layout
     QPushButton* corner = new QPushButton(App::settings().inch() ? "I" : "M", this);
-    connect(corner, &QPushButton::clicked, [this, corner](bool fl) {
+    connect(corner, &QPushButton::clicked, [corner, this](bool fl) {
         corner->setText(fl ? "I" : "M");
         App::settings().setInch(fl);
         scene()->update();
@@ -100,10 +94,18 @@ GraphicsView::GraphicsView(QWidget* parent)
     corner->setCheckable(true);
     corner->setFixedSize(Ruler::Breadth, Ruler::Breadth);
 
-    gridLayout->addWidget(corner, 1, 0);
-    gridLayout->addWidget(hRuler, 1, 1);
-    gridLayout->addWidget(vRuler, 0, 0);
-    gridLayout->addWidget(viewport(), 0, 1);
+    { // add grid layout
+        QGridLayout* gridLayout = new QGridLayout(this);
+        gridLayout->setSpacing(0);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+        gridLayout->setMargin(0);
+#endif
+        gridLayout->addWidget(corner, 1, 0);
+        gridLayout->addWidget(hRuler, 1, 1);
+        gridLayout->addWidget(vRuler, 0, 0);
+        gridLayout->addWidget(horizontalScrollBar(), 2, 1);
+        gridLayout->addWidget(verticalScrollBar(), 0, 2);
+    }
 
     connect(horizontalScrollBar(), &QScrollBar::valueChanged, this, &GraphicsView::updateRuler);
     connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &GraphicsView::updateRuler);
@@ -165,8 +167,13 @@ void GraphicsView::zoom100()
         x = qAbs(1.0 / m11 / (size.height() / scrGeometry.height()));
         y = qAbs(1.0 / m22 / (size.width() / scrGeometry.width()));
     }
-    scale(x, y);
-    updateRuler();
+
+    if (0 && App::settings().guiSmoothScSh()) {
+        animate(this, "scale", getScale(), x * zoomFactorAnim);
+    } else {
+        scale(x, y);
+        updateRuler();
+    }
 }
 
 void GraphicsView::zoomIn()
@@ -246,9 +253,7 @@ double GraphicsView::getScale() noexcept { return transform().m11(); }
 void GraphicsView::setOpenGL(bool useOpenGL)
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    setViewport(useOpenGL
-            ? new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel | QGL::Rgba))
-            : new QWidget());
+    setViewport(useOpenGL ? new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::AlphaChannel | QGL::Rgba)) : new QWidget());
 #else
     auto oglw = new QOpenGLWidget();
     QSurfaceFormat sf;
@@ -256,6 +261,7 @@ void GraphicsView::setOpenGL(bool useOpenGL)
     oglw->setFormat(sf);
     setViewport(useOpenGL ? oglw : new QWidget);
 #endif
+    ::setCursor(viewport());
 }
 
 void GraphicsView::setViewRect(QRectF r)
@@ -335,7 +341,7 @@ void GraphicsView::wheelEvent(QWheelEvent* event)
 
 void GraphicsView::updateRuler()
 {
-    layout()->setContentsMargins(0, 0, 0, horizontalScrollBar()->isVisible() ? horizontalScrollBar()->height() : 0);
+    // layout()->setContentsMargins(0, 0, 0, horizontalScrollBar()->isVisible() ? horizontalScrollBar()->height() : 0);
     updateSceneRect(QRectF()); //actualize mapFromScene
     QPoint p = mapFromScene(QPointF());
     vRuler->SetOrigin(p.y());
@@ -396,10 +402,12 @@ void GraphicsView::mousePressEvent(QMouseEvent* event)
         setDragMode(NoDrag);
         setInteractive(false);
         //Ruler
-        m_scene->setDrawRuller(true);
-        const QPointF point(mappedPos(event));
-        m_scene->setCross2(point);
-        emit mouseClickR(point);
+        if (ruler_) {
+            m_scene->setDrawRuller(true);
+            const QPointF point(mappedPos(event));
+            m_scene->setCross2(point);
+            emit mouseClickR(point);
+        }
     } else {
         // это для выделения рамкой  - работа по-умолчанию левой кнопки мыши
         QGraphicsView::mousePressEvent(event);

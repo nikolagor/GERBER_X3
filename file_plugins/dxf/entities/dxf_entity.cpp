@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "dxf_entity.h"
 #include "dxf_allentities.h"
@@ -346,7 +343,7 @@ std::tuple<QPointF, double, double, double> bulgeToArc(QPointF start_point, QPoi
         Tuple: (center, start_angle, end_angle, radius)
     */
     double r = signedBulgeRadius(start_point, end_point, bulge);
-    double a = angle(start_point, end_point) + (M_PI / 2.0 - atan(bulge) * 2.0);
+    double a = angle(start_point, end_point) + (pi / 2.0 - atan(bulge) * 2.0);
     QPointF c = polar(start_point, a, r);
     if (bulge < 0.0)
         return { c, angle(c, end_point), angle(c, start_point), abs(r) };

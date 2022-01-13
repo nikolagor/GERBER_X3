@@ -1,17 +1,14 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
 * Copyright :  Damir Bakiev 2016-2020                                          *
-*                                                                              *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "gbraperture.h"
 #include "mathparser.h"
@@ -25,7 +22,7 @@ AbstractAperture::AbstractAperture(const Format* format)
 {
 }
 
-AbstractAperture::~AbstractAperture() {}
+AbstractAperture::~AbstractAperture() { }
 
 double AbstractAperture::drillDiameter() const
 {
@@ -247,7 +244,7 @@ QString ApPolygon::name() const { return QString("P(Ø%1, N%2)").arg(m_diam).arg
 
 ApertureType ApPolygon::type() const { return Polygon; }
 
-bool ApPolygon::fit(double toolDiam) const { return m_diam * cos(M_PI / m_verticesCount) > toolDiam; }
+bool ApPolygon::fit(double toolDiam) const { return m_diam * cos(pi / m_verticesCount) > toolDiam; }
 
 void ApPolygon::draw()
 {

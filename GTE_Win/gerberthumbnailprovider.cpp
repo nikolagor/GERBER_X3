@@ -1,17 +1,14 @@
 // This is an open source non-commercial project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 /*******************************************************************************
-*                                                                              *
 * Author    :  Bakiev Damir                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
 * Copyright :  Bakiev Damir 2010-2020                                          *
-*                                                                              *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 
 #include "gerberthumbnailprovider.h"
@@ -165,7 +162,7 @@ IFACEMETHODIMP GerberThumbnailProvider::GetThumbnail(
         painter.begin(&pixmap);
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setBrush(Qt::black);
-        painter.setPen(Qt::NoPen);//QPen(Qt::black, 0.0));
+        painter.setPen(Qt::NoPen); //QPen(Qt::black, 0.0));
         painter.translate(-painterPath.boundingRect().left() * scale, painterPath.boundingRect().bottom() * scale);
         painter.scale(scale, -scale);
         painter.drawPath(painterPath);

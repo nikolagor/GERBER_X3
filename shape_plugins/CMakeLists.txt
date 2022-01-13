@@ -1,17 +1,14 @@
 #/*******************************************************************************
-#*                                                                              *
 #* Author    :  Damir Bakiev                                                    *
 #* Version   :  na                                                              *
 #* Date      :  11 November 2021                                                *
 #* Website   :  na                                                              *
-#* Copyright :  Damir Bakiev 2016-2021                                          *
-#*                                                                              *
+#* Copyright :  Damir Bakiev 2016-2022                                          *
 #* License:                                                                     *
 #* Use, modification & distribution is subject to Boost Software License Ver 1. *
 #* http://www.boost.org/LICENSE_1_0.txt                                         *
-#*                                                                              *
 #*******************************************************************************/
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.16)
 
 project(Shape_Plugins)
 set_property(GLOBAL PROPERTY CXX_STANDARD 20)
@@ -28,14 +25,12 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(SUFFIX "_msvc")
 endif()
 
-#if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
-#if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
-if(CMAKE_CL_64)
+if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
     set(SUFFIX "${SUFFIX}_x64")
-    set(PLUGINS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../bin_x64/plugins")
+    set(PLUGINS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../bin_x64")
 else()
     set(SUFFIX "${SUFFIX}_x32")
-    set(PLUGINS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../bin_x32/plugins")
+    set(PLUGINS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../bin_x32")
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -47,6 +42,8 @@ elseif(CMAKE_BUILD_TYPE MATCHES MinSizeRel)
 elseif(CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
     set(SUFFIX "${SUFFIX}_rd")
 endif()
+
+set(PLUGINS_DIR "${PLUGINS_DIR}/plugins")
 
 set(STATIC_LIBS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../libs${SUFFIX}")
 

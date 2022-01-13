@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "dxf_graphicobject.h"
 #include "dxf_entity.h"
@@ -78,7 +75,7 @@ void GraphicObject::setScale(double scaleX, double scaleY)
     auto scale = [](Path& path, double sx, double sy, const IntPoint& center = {}) {
         const bool fl = Area(path) < 0;
         for (IntPoint& pt : path) {
-            const double dAangle = (M_PI * 2) - center.angleRadTo(pt);
+            const double dAangle = (pi * 2) - center.angleRadTo(pt);
             const double length = center.distTo(pt);
             pt = IntPoint(static_cast<cInt>(cos(dAangle) * length * sx), static_cast<cInt>(sin(dAangle) * length * sy));
             pt.X += center.X;

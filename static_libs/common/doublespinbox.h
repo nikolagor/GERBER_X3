@@ -1,15 +1,12 @@
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #pragma once
 #include <QDoubleSpinBox>
@@ -18,7 +15,7 @@
 #include <QTimer>
 
 class DoubleSpinBox : public QDoubleSpinBox {
-//    Q_OBJECT
+    //    Q_OBJECT
 public:
     explicit DoubleSpinBox(QWidget* parent = nullptr)
         : QDoubleSpinBox(parent)
@@ -64,7 +61,6 @@ private:
 
     // QWidget interface
 protected:
-
     void keyPressEvent(QKeyEvent* event) override
     {
         //    if (event->key() == Qt::Key_Backspace) {

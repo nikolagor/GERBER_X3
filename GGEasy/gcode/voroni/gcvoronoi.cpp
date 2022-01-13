@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "gcvoronoi.h"
 #include "../gcfile.h"
@@ -24,11 +21,13 @@ inline size_t qHash(const IntPoint& key, uint /*seed*/ = 0) { return qHash(QByte
 
 namespace GCode {
 
-inline size_t qHash(const GCode::VoronoiCreator::Pair& tag, uint = 0) {
+inline size_t qHash(const GCode::VoronoiCreator::Pair& tag, uint = 0)
+{
     return ::qHash(tag.first.X ^ tag.second.X) ^ ::qHash(tag.first.Y ^ tag.second.Y);
 }
 
-void VoronoiCreator::create() {
+void VoronoiCreator::create()
+{
     const auto& tool = m_gcp.tools.front();
     const auto depth = m_gcp.params[GCodeParams::Depth].toDouble();
     const auto width = m_gcp.params[GCodeParams::Width].toDouble();
@@ -85,7 +84,8 @@ void VoronoiCreator::create() {
     }
 }
 
-void VoronoiCreator::createOffset(const Tool& tool, double depth, const double width) {
+void VoronoiCreator::createOffset(const Tool& tool, double depth, const double width)
+{
     msg = tr("Create Offset");
     m_toolDiameter = tool.getDiameter(depth) * uScale;
     m_dOffset = m_toolDiameter / 2;

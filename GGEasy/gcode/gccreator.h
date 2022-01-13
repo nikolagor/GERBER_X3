@@ -1,15 +1,12 @@
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #pragma once
 #include "gctypes.h"
@@ -20,12 +17,13 @@
 //#include <QThread>
 //#include <QThreadPool>
 //#include <QtConcurrent>
-//#include "tool.h"
+//#include "toolpch.h"
 #include <source_location>
+#include <sstream>
 
 using namespace ClipperLib;
 
-void dbgPaths(Paths ps, const QString& fileName, bool closed = false, const Tool& tool = { 1 });
+void dbgPaths(Paths ps, const QString& fileName, bool closed = false, const Tool& tool = {});
 
 class ErrorItem;
 
@@ -76,7 +74,7 @@ public:
                << location.line() << ":"
                << location.column() << ") `"
                << location.function_name();
-            throw cancelException(ss.str().data());
+            throw cancelException(ss.str().data() /*__FUNCTION__*/);
         }
     }
     static void setCancel(bool cancel) { m_cancel = cancel; }

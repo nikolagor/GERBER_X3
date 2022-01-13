@@ -2,25 +2,20 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
 * Copyright :  Damir Bakiev 2016-2020                                          *
-*                                                                              *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "shcircle.h"
 #include "math.h"
 #include "scene.h"
 #include "shhandler.h"
 #include <QIcon>
-
-#include "leakdetector.h"
 
 namespace Shapes {
 
@@ -50,7 +45,7 @@ void Circle::redraw()
     const int intSteps = App::settings().clpCircleSegments(m_radius);
     const cInt radius = static_cast<cInt>(m_radius * uScale);
     const IntPoint center((handlers[Center]->pos()));
-    const double delta_angle = (2.0 * M_PI) / intSteps;
+    const double delta_angle = (2.0 * pi) / intSteps;
     Path& path = m_paths.front();
     path.clear();
     for (int i = 0; i < intSteps; i++) {

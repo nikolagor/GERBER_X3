@@ -2,25 +2,24 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "gbrfile.h"
 #include "compitem.h"
 
+#include "clipper.hpp"
 #include "compitem.h"
 #include "datapathitem.h"
 #include "datasoliditem.h"
 #include "ft_node.h"
+#include "myclipper.h"
 #include "project.h"
 #include "settings.h"
 
@@ -29,7 +28,6 @@
 #include <QThread>
 
 #include "gbrnode.h"
-#include "leakdetector.h"
 
 namespace Gerber {
 
@@ -86,19 +84,81 @@ Paths File::merge() const
     t.start();
     m_mergedPaths.clear();
     size_t i = 0;
-    while (i < m_graphicObjects.size()) {
-        Clipper clipper;
-        clipper.AddPaths(m_mergedPaths, ptSubject, true);
-        const auto exp = m_graphicObjects.at(i).state().imgPolarity();
-        do {
-            const GraphicObject& go = m_graphicObjects.at(i++);
-            clipper.AddPaths(go.paths(), ptClip, true);
-        } while (i < m_graphicObjects.size() && exp == m_graphicObjects.at(i).state().imgPolarity());
-        if (m_graphicObjects.at(i - 1).state().imgPolarity() == Positive)
-            clipper.Execute(ctUnion, m_mergedPaths, pftPositive);
-        else
-            clipper.Execute(ctDifference, m_mergedPaths, pftNonZero);
+
+    if constexpr (1) {
+        std::list<Paths> pathList;
+        {
+            std::list<std::map<int, Paths>> pathListMap;
+            int exp = -1;
+            for (auto& go : m_graphicObjects) {
+                if (exp != go.state().imgPolarity()) {
+                    exp = go.state().imgPolarity();
+                    pathListMap.resize(pathListMap.size() + 1);
+                }
+                if (go.state().type() == Line) {
+                    auto& paths = pathListMap.back();
+                    paths[go.state().aperture()].push_back(go.path());
+                }
+            }
+            for (auto& map : pathListMap) {
+                pathList.resize(pathList.size() + 1);
+                for (auto& [aperture, paths] : map) {
+                    mergePaths(paths);
+                    ClipperOffset offset;
+                    for (int i {}; i < paths.size(); ++i) {
+                        auto& path = paths[i];
+                        if (path.back() == path.front()) {
+                            offset.AddPath(paths[i], ClipperLib::jtRound, ClipperLib::etClosedLine);
+                            paths.erase(paths.begin() + i--);
+                        }
+                    }
+                    offset.AddPaths(paths, ClipperLib::jtRound, ClipperLib::etOpenRound);
+                    offset.Execute(paths, m_apertures.at(aperture)->apertureSize() * uScale * 0.5);
+                    //pathList.back().append(std::move(paths));
+                    pathList.back().append(paths);
+                }
+            }
+        }
+
+        while (i < m_graphicObjects.size()) {
+            Clipper clipper;
+            clipper.AddPaths(m_mergedPaths, ptSubject, true);
+            const auto exp = m_graphicObjects.at(i).state().imgPolarity();
+            do {
+                if (m_graphicObjects[i].state().type() == Line) {
+                    ++i;
+                } else {
+                    const GraphicObject& go = m_graphicObjects.at(i++);
+                    clipper.AddPaths(go.paths(), ptClip, true);
+                }
+            } while (i < m_graphicObjects.size() && exp == m_graphicObjects.at(i).state().imgPolarity());
+
+            if (exp)
+                ReversePaths(pathList.front());
+            clipper.AddPaths(pathList.front(), ptClip, true);
+            pathList.pop_front();
+
+            if (m_graphicObjects.at(i - 1).state().imgPolarity() == Positive)
+                clipper.Execute(ctUnion, m_mergedPaths, pftPositive);
+            else
+                clipper.Execute(ctDifference, m_mergedPaths, pftNonZero);
+        }
+    } else {
+        while (i < m_graphicObjects.size()) {
+            Clipper clipper;
+            clipper.AddPaths(m_mergedPaths, ptSubject, true);
+            const auto exp = m_graphicObjects.at(i).state().imgPolarity();
+            do {
+                const GraphicObject& go = m_graphicObjects.at(i++);
+                clipper.AddPaths(go.paths(), ptClip, true);
+            } while (i < m_graphicObjects.size() && exp == m_graphicObjects.at(i).state().imgPolarity());
+            if (m_graphicObjects.at(i - 1).state().imgPolarity() == Positive)
+                clipper.Execute(ctUnion, m_mergedPaths, pftPositive);
+            else
+                clipper.Execute(ctDifference, m_mergedPaths, pftNonZero);
+        }
     }
+
     if (Settings::cleanPolygons())
         CleanPolygons(m_mergedPaths, Settings::cleanPolygonsDist() * uScale);
     return m_mergedPaths;

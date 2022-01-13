@@ -2,27 +2,23 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  11 November 2021                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "settingsdialog.h"
 #include "colorselector.h"
 #include "graphicsview.h"
 #include "interfaces/pluginfile.h"
 
+#include <QDesktopServices>
 #include <QtWidgets>
 #include <mainwindow.h>
-
-#include "leakdetector.h"
 
 const int gridColor = 100;
 
@@ -153,6 +149,17 @@ SettingsDialog::SettingsDialog(QWidget* parent, int tab)
     readSettingsDialog();
     if (tab > -1)
         tabwMain->setCurrentIndex(tab);
+
+    { //Open Settings Folder
+        button = new QPushButton(tr("Open Settings Folder"), buttonBox);
+        button->setIcon(QIcon::fromTheme("folder"));
+        button->setMinimumWidth(QFontMetrics(font()).boundingRect(button->text()).width() + 32);
+        buttonBox->addButton(button, QDialogButtonBox::NRoles);
+        connect(button, &QPushButton::clicked, [] { QDesktopServices::openUrl(QUrl(settingsPath, QUrl::TolerantMode)); });
+    }
+
+    buttonBox->button(QDialogButtonBox::Ok)->setIcon(QIcon::fromTheme("dialog-ok-apply"));
+    buttonBox->button(QDialogButtonBox::Cancel)->setIcon(QIcon::fromTheme("dialog-cancel"));
 }
 
 SettingsDialog::~SettingsDialog() { saveSettingsDialog(); }
@@ -263,7 +270,8 @@ void SettingsDialog::saveSettings()
 void SettingsDialog::readSettingsDialog()
 {
     settings.beginGroup("SettingsDialog");
-    restoreGeometry(settings.value("geometry").toByteArray());
+    if (auto geometry { settings.value("geometry").toByteArray() }; geometry.size())
+        restoreGeometry(geometry);
     settings.getValue(tabwMain);
     settings.endGroup();
 }
@@ -318,6 +326,8 @@ void SettingsDialog::showEvent(QShowEvent* event)
     for (int i = 0; i < tabwMain->tabBar()->count(); ++i)
         width += tabwMain->tabBar()->tabRect(i).width();
     resize(width + 20, 10);
+    button->setMaximumHeight(buttonBox->button(QDialogButtonBox::Ok)->height());
+
     QDialog::showEvent(event);
 }
 

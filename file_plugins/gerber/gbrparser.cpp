@@ -2,17 +2,14 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 /*******************************************************************************
-*                                                                              *
 * Author    :  Damir Bakiev                                                    *
 * Version   :  na                                                              *
 * Date      :  01 February 2020                                                *
 * Website   :  na                                                              *
-* Copyright :  Damir Bakiev 2016-2021                                          *
-*                                                                              *
+* Copyright :  Damir Bakiev 2016-2022                                          *
 * License:                                                                     *
 * Use, modification & distribution is subject to Boost Software License Ver 1. *
 * http://www.boost.org/LICENSE_1_0.txt                                         *
-*                                                                              *
 *******************************************************************************/
 #include "gbrparser.h"
 
@@ -25,7 +22,6 @@
 
 #include "interfaces/pluginfile.h"
 
-#include "leakdetector.h"
 #include "utils.h"
 #include <QElapsedTimer>
 #include <QMutex>
@@ -349,9 +345,9 @@ mvector<QString> Parser::cleanAndFormatFile(QString data)
 double Parser::arcAngle(double start, double stop)
 {
     if (m_state.interpolation() == CounterclockwiseCircular && stop <= start)
-        stop += 2.0 * M_PI;
+        stop += 2.0 * pi;
     if (m_state.interpolation() == ClockwiseCircular && stop >= start)
-        stop -= 2.0 * M_PI;
+        stop -= 2.0 * pi;
     return qAbs(stop - start);
 }
 
@@ -527,10 +523,10 @@ IntPoint Parser::parsePosition(const QString& xyStr)
     static constexpr ctll::fixed_string ptrnPosition(R"((?:G[01]{1,2})?(?:X([\+\-]?\d*\.?\d+))?(?:Y([\+\-]?\d*\.?\d+))?.+)"); // fixed_string("(?:G[01]{1,2})?(?:X([\+\-]?\d*\.?\d+))?(?:Y([\+\-]?\d*\.?\d+))?.+");
     if (auto [whole, x, y] = ctre::match<ptrnPosition>(data /*xyStr*/); whole) {
         cInt tmp = 0;
-        if (parseNumber(CtreCapTo(x), tmp, m_state.format()->xInteger, m_state.format()->xDecimal))
+        if (x && parseNumber(CtreCapTo(x), tmp, m_state.format()->xInteger, m_state.format()->xDecimal))
             m_state.format()->coordValueNotation == AbsoluteNotation ? m_state.curPos().X = tmp : m_state.curPos().X += tmp;
         tmp = 0;
-        if (parseNumber(CtreCapTo(y), tmp, m_state.format()->yInteger, m_state.format()->yDecimal))
+        if (y && parseNumber(CtreCapTo(y), tmp, m_state.format()->yInteger, m_state.format()->yDecimal))
             m_state.format()->coordValueNotation == AbsoluteNotation ? m_state.curPos().Y = tmp : m_state.curPos().Y += tmp;
     }
 
@@ -551,12 +547,12 @@ Path Parser::arc(const IntPoint& center, double radius, double start, double sto
     const int intSteps = App::settings().clpCircleSegments(radius * dScale); //MinStepsPerCircle;
 
     if (m_state.interpolation() == ClockwiseCircular && stop >= start)
-        stop -= 2.0 * M_PI;
+        stop -= 2.0 * pi;
     else if (m_state.interpolation() == CounterclockwiseCircular && stop <= start)
-        stop += 2.0 * M_PI;
+        stop += 2.0 * pi;
 
     double angle = qAbs(stop - start);
-    double steps = qMax(static_cast<int>(ceil(angle / (2.0 * M_PI) * intSteps)), 2);
+    double steps = qMax(static_cast<int>(ceil(angle / (2.0 * pi) * intSteps)), 2);
     double delta_angle = da_sign[m_state.interpolation()] * angle * 1.0 / steps;
     for (int i = 0; i < steps; i++) {
         double theta = start + delta_angle * (i + 1);
@@ -653,6 +649,8 @@ bool Parser::parseAperture(const QString& gLine)
         case Rectangle:
             if (paramList.size() > 2)
                 hole = toDouble(paramList[2]);
+            if (paramList.size() < 2)
+                paramList << paramList[0];
             apertures.emplace(aperture, std::make_shared<ApRectangle>(toDouble(paramList[0]), toDouble(paramList[1]), hole, file->format()));
             break;
         case Obround:
@@ -712,13 +710,12 @@ bool Parser::parseTransformations(const QString& gLine)
     static const QVector<char> slTransformations { 'P', 'M', 'R', 'S' };
     static const QVector<char> slLevelPolarity { 'D', 'C' };
     static const QVector<QString> slLoadMirroring { "N", "X", "Y", "XY" };
-    static constexpr ctll::fixed_string ptrnTransformations(R"(^%L([PMRS])(.+)\*%$)"); // fixed_string("^%L([PMRS])(.+)\*%$");
-    if (auto [whole, tr, val] = ctre::match<ptrnTransformations>(data); whole) {
+    if (auto [whole, tr, val] = ctre::match<R"(^%L([PMRS])(.+)\*%$)">(data); whole) {
         const char trType = tr.data()[0];
         switch (slTransformations.indexOf(trType)) {
         case trPolarity:
             addPath();
-            switch (slLevelPolarity.indexOf(QString { CtreCapTo(val) }.front().toLatin1())) {
+            switch (slLevelPolarity.indexOf(val.data()[0])) {
             case Positive:
                 m_state.setImgPolarity(Positive);
                 break;
@@ -730,13 +727,13 @@ bool Parser::parseTransformations(const QString& gLine)
             }
             return true;
         case trMirror:
-            m_state.setMirroring(static_cast<Mirroring>(slLoadMirroring.indexOf(QString { CtreCapTo(val) })));
+            m_state.setMirroring(static_cast<Mirroring>(slLoadMirroring.indexOf(CtreCapTo(val))));
             return true;
         case trRotate:
-            m_state.setRotating(val);
+            m_state.setRotating(CtreCapTo(val));
             return true;
         case trScale:
-            m_state.setScaling(val);
+            m_state.setScaling(CtreCapTo(val));
             return true;
         }
     }
@@ -934,16 +931,14 @@ bool Parser::parseCircularInterpolation(const QString& gLine)
         if (!cg.size() && m_state.gCode() != G02 && m_state.gCode() != G03)
             return false;
         cInt x = 0, y = 0, i = 0, j = 0;
-        cx.size() ? parseNumber(CtreCapTo(cx), x, m_state.format()->xInteger, m_state.format()->xDecimal)
-                  : x = m_state.curPos().X;
-        cy.size() ? parseNumber(CtreCapTo(cy), y, m_state.format()->yInteger, m_state.format()->yDecimal)
-                  : y = m_state.curPos().Y;
+        cx.size() ? parseNumber(CtreCapTo(cx), x, m_state.format()->xInteger, m_state.format()->xDecimal) : x = m_state.curPos().X;
+        cy.size() ? parseNumber(CtreCapTo(cy), y, m_state.format()->yInteger, m_state.format()->yDecimal) : y = m_state.curPos().Y;
         parseNumber(CtreCapTo(ci), i, m_state.format()->xInteger, m_state.format()->xDecimal);
         parseNumber(CtreCapTo(cj), j, m_state.format()->yInteger, m_state.format()->yDecimal);
         // Set operation code if provided
         if (cd.size())
             m_state.setDCode(static_cast<Operation>(CtreCapTo(cd).toInt()));
-        int gc = CtreCapTo(cg);
+        int gc = cg ? int(CtreCapTo(cg)) : m_state.gCode();
         switch (gc) {
         case G02:
             m_state.setInterpolation(ClockwiseCircular);
@@ -1004,9 +999,7 @@ bool Parser::parseCircularInterpolation(const QString& gLine)
             const double start = atan2(-j, -i); // Start angle
             // Численные ошибки могут помешать, start == stop, поэтому мы проверяем заблаговременно.
             // Ч­то должно привести к образованию дуги в 360 градусов.
-            const double stop = (m_state.curPos() == IntPoint(x, y))
-                ? start
-                : atan2(-centerPos[0].Y + y, -centerPos[0].X + x); // Stop angle
+            const double stop = (m_state.curPos() == IntPoint(x, y)) ? start : atan2(-centerPos[0].Y + y, -centerPos[0].X + x); // Stop angle
 
             arcPolygon = arc(IntPoint(centerPos[0].X, centerPos[0].Y), radius1, start, stop);
             //arcPolygon = arc(curPos, IntPoint(x, y), centerPos[0]);
@@ -1032,7 +1025,7 @@ bool Parser::parseCircularInterpolation(const QString& gLine)
                 const double start = atan2(-j, -i);
                 const double stop = atan2(-centerPos[c].Y + y, -centerPos[c].X + x);
                 const double angle = arcAngle(start, stop);
-                if (angle < (M_PI + 1e-5) * 0.5) {
+                if (angle < (pi + 1e-5) * 0.5) {
                     arcPolygon = arc(IntPoint(centerPos[c].X, centerPos[c].Y), radius1, start, stop);
                     // Replace with exact values
                     m_state.setCurPos({ x, y });
