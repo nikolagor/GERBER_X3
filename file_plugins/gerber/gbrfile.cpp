@@ -32,14 +32,14 @@
 namespace Gerber {
 
 Path GraphicObject::elipse() const { return m_state.dCode() == D03
-            && m_gFile->apertures()->at(m_state.aperture())->type() == ApertureType::Circle
-        ? m_path
-        : Path(); } // circle
+            && m_gFile->apertures()->at(m_state.aperture())->type() == ApertureType::Circle ?
+        m_path :
+        Path(); } // circle
 Paths GraphicObject::elipseW() const { return m_state.dCode() == D03
             && m_gFile->apertures()->at(m_state.aperture())->type() == ApertureType::Circle
-            && m_gFile->apertures()->at(m_state.aperture())->withHole()
-        ? m_paths
-        : Paths(); }
+            && m_gFile->apertures()->at(m_state.aperture())->withHole() ?
+        m_paths :
+        Paths(); }
 
 QDebug operator<<(QDebug debug, const State& state) {
     QDebugStateSaver saver(debug);
@@ -221,10 +221,9 @@ Pathss& File::groupedPaths(File::Group group, bool fl) {
 }
 
 bool File::flashedApertures() const {
-    for (auto [_, aperture] : m_apertures) {
+    for (const auto& [_, aperture] : m_apertures)
         if (aperture->flashed())
             return true;
-    }
     return false;
 }
 

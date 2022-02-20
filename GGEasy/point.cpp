@@ -233,7 +233,7 @@ Pin::Pin()
     m_shape.addEllipse(QRectF(QPointF(-3, -3), QSizeF(6, 6)));
     m_rect = m_path.boundingRect();
 
-    setZValue(std::numeric_limits<qreal>::max() - m_index);
+    setZValue(std::numeric_limits<double>::max() - m_index);
     m_pins[m_index] = this;
 }
 

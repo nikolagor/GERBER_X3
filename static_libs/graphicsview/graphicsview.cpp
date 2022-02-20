@@ -93,10 +93,12 @@ GraphicsView::GraphicsView(QWidget* parent)
     corner->setFixedSize(Ruler::Breadth, Ruler::Breadth);
 
     { // add grid layout
-        QGridLayout* gridLayout = new QGridLayout(this);
-        gridLayout->setSpacing(0);
+        auto gridLayout = new QGridLayout(this);
+        gridLayout->setSpacing({});
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-        gridLayout->setMargin(0);
+        gridLayout->setMargin({});
+#else
+        gridLayout->setContentsMargins({});
 #endif
         gridLayout->addWidget(corner, 1, 0);
         gridLayout->addWidget(hRuler, 1, 1);

@@ -71,7 +71,7 @@ void ItemGroup::setPenColor(QColor* col) {
         item->setPenColorPtr(col);
 }
 
-void ItemGroup::setZValue(qreal z) {
+void ItemGroup::setZValue(double z) {
     for (GraphicsItem* item : *this)
         item->setZValue(z);
 }

@@ -10,16 +10,6 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(SUFFIX "_msvc")
 endif()
 
-#if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
-#if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
-if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
-    set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin_x64")
-    set(PLUGINS_DIR "${OUTPUT_DIRECTORY}/plugins")
-else()
-    set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin_x32")
-    set(PLUGINS_DIR "${OUTPUT_DIRECTORY}/plugins")
-endif()
-
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     set(SUFFIX "${SUFFIX}_d")
 elseif(CMAKE_BUILD_TYPE MATCHES Release)
@@ -30,7 +20,17 @@ elseif(CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
     set(SUFFIX "${SUFFIX}_rd")
 endif()
 
-set(STATIC_LIBS_DIR "${CMAKE_SOURCE_DIR}/libs${SUFFIX}")
+if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8")
+    set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/x64")
+else()
+    set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/x32")
+endif()
+
+set(OUTPUT_DIRECTORY "${OUTPUT_DIRECTORY}${SUFFIX}")
+
+set(PLUGINS_DIR "${OUTPUT_DIRECTORY}/plugins")
+
+set(STATIC_LIBS_DIR "${CMAKE_SOURCE_DIR}/bin/libs${SUFFIX}")
 
 message(${CMAKE_SOURCE_DIR})
 message(${STATIC_LIBS_DIR})

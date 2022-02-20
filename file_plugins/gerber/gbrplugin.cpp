@@ -61,7 +61,7 @@ QIcon Plugin::drawApertureIcon(AbstractAperture* aperture) const {
         painterPath.addPolygon(polygon);
     painterPath.addEllipse(QPointF(0, 0), aperture->drillDiameter() * 0.5, aperture->drillDiameter() * 0.5);
     const QRectF rect = painterPath.boundingRect();
-    qreal scale = static_cast<double>(IconSize) / qMax(rect.width(), rect.height());
+    double scale = static_cast<double>(IconSize) / qMax(rect.width(), rect.height());
     double ky = -rect.top() * scale;
     double kx = rect.left() * scale;
     if (rect.width() > rect.height())
@@ -92,7 +92,7 @@ QIcon Plugin::drawRegionIcon(const GraphicObject& go) const {
 
     const QRectF rect = painterPath.boundingRect();
 
-    qreal scale = static_cast<double>(IconSize) / qMax(rect.width(), rect.height());
+    double scale = static_cast<double>(IconSize) / qMax(rect.width(), rect.height());
 
     double ky = rect.bottom() * scale;
     double kx = rect.left() * scale;

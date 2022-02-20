@@ -35,7 +35,7 @@ QIcon errorIcon(const QPainterPath& path) {
 
     const QRectF rect = path.boundingRect();
 
-    qreal scale = static_cast<double>(IconSize) / qMax(rect.width(), rect.height());
+    double scale = static_cast<double>(IconSize) / qMax(rect.width(), rect.height());
 
     double ky = rect.bottom() * scale;
     double kx = rect.left() * scale;
