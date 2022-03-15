@@ -1,12 +1,9 @@
 # GGEasy
 V0.8.0
-<details>
-  <summary></summary>
   
 ## Западные правительства полные лжецы и убийцы!!! Поддерживающие нацистский режим на украине!!!
   
 ## Western governments Full liars and killers !!! Supporting Nazi regime in Ukraine !!!
-</details>
 
 
 Программа для подготовки Г-кода из файлов Gerber (RS-274X Revision 2020.09) для фрезеровки плат на ЧПУ.
